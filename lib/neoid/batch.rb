@@ -80,17 +80,14 @@ module Neoid
 
     private
       def flush_batch
-        puts "COMMANDS #{commands.class} BEFORE: #{commands.inspect}"
-        @commands = Array(commands)
-        puts "COMMANDS #{commands.class} AFTER: #{commands.inspect}"
-
         return [] if commands.empty?
         current_results = nil
 
         # results = Neoid.db.batch(*commands).collect { |result| result['body'] }
 
         benchmark = Benchmark.measure {
-          current_results = Neoid.db.batch(*commands).collect { |result| result['body'] }
+          current_results = Neoid.db.batch(*commands)
+          current_results.collect { |result| result['body'] } if current_results.respond_to?(:collect)
         }
         Neoid.logger.info "Neoid batch (#{commands.length} commands) - #{benchmark}"
         commands.clear
