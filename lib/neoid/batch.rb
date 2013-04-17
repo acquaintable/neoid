@@ -67,7 +67,7 @@ module Neoid
 
       begin
         @block.call(self)
-      ensure      
+      ensure
         self.class.reset_current_batch
       end
 
@@ -80,6 +80,10 @@ module Neoid
 
     private
       def flush_batch
+        puts "COMMANDS #{commands.class} BEFORE: #{commands.inspect}"
+        @commands = Array(commands)
+        puts "COMMANDS #{commands.class} AFTER: #{commands.inspect}"
+
         return [] if commands.empty?
         current_results = nil
 
